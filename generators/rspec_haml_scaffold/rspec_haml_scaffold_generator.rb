@@ -1,4 +1,4 @@
-class RspecHamlScaffoldGenerator < Rails::Generator::NamedBase
+ baclass RspecHamlScaffoldGenerator < Rails::Generator::NamedBase
   default_options :skip_migration => false
   
   attr_reader   :controller_name,
@@ -110,7 +110,7 @@ class RspecHamlScaffoldGenerator < Rails::Generator::NamedBase
       end
 
       #m.route_resources controller_file_name
-      route_resources name
+      route_resources(name)
 
     end
   end
@@ -159,14 +159,14 @@ class RspecHamlScaffoldGenerator < Rails::Generator::NamedBase
 
     def route_resources(resource)
       sentinel = 'ActionController::Routing::Routes.draw do |map|'
-      logger.route "map.resources #{resource}"
+      logger.route "map.resources #{resource.downcase}"
       unless options[:pretend]
         gsub_file 'config/routes.rb', /(#{Regexp.escape(sentinel)})/mi do |match|
         
-           if !resource.split('/')[1].nil? 
-             one = resource.split('/')[0]
-             two = resource.split('/')[1]
-             "#{match}\n  map.namespace(:#{one}) do |#{one}|\n    #{one}.resources :#{two.pluralize}\n  end"
+           if resource.split('/')[1].present?
+             parent = resource.split('/')[0]
+             child  = resource.split('/')[1]
+             "#{match}\n  map.namespace(:#{parent}) do |#{parent}|\n    #{parent}.resources :#{child.pluralize}\n  end"
            else
              "#{match}\n  map.resources :#{resource.pluralize}\n"
            end        
