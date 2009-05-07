@@ -29,7 +29,7 @@
     end
 
     @resource_generator = "rspec_haml_scaffold"
-    @default_file_extension = "haml"
+    @default_file_extension = "html.haml"
     @resource_edit_path = "/edit"
     
 
@@ -174,14 +174,13 @@
         end
       end
     end
-        
     
     def gsub_file(relative_destination, regexp, *args, &block)
       path = destination_path(relative_destination)
       content = File.read(path).gsub(regexp, *args, &block)
       File.open(path, 'wb') { |file| file.write(content) }
     end
-              
+
 end
 
 module Rails
@@ -199,14 +198,14 @@ module Rails
           when :boolean                     then "false"
           else
             ""
-        end      
+        end
       end
 
       def input_type
         @input_type ||= case type
-          when :text                        then "textarea"
-          else
-            "input"
+        when :text                        then "textarea"
+        else
+          "input"
         end      
       end
     end
